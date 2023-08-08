@@ -1,0 +1,50 @@
+<div class="container">
+  <div class="container-spinner" *ngIf="isFetching">
+    <ion-spinner name="bubbles" class="ion-text-center"></ion-spinner>
+  </div>
+  <div class="error-container" *ngIf="hasError">
+    <ion-text>{{ errorMessage }}</ion-text>
+  </div>
+  <form [formGroup]="formGroup">
+    <ion-input
+      label="Title"
+      fill="solid"
+      class="ion-margin-bottom"
+      formControlName="title"
+    ></ion-input>
+    <ion-textarea
+      label="Content"
+      fill="solid"
+      [autoGrow]="true"
+      class="ion-margin-bottom"
+      formControlName="content"
+    ></ion-textarea>
+    <ion-checkbox class="ion-margin-bottom" formControlName="publish"
+      >Publish Post</ion-checkbox
+    >
+
+    <ion-button
+      type="submit"
+      expand="block"
+      (click)="edit()"
+      [disabled]="formGroup.invalid"
+    >
+      <ion-text>Submit</ion-text>
+      <ion-spinner *ngIf="isUpdating" class="ion-margin-start"></ion-spinner>
+    </ion-button>
+  </form>
+
+  <form class="image-form" (submit)="editImage($event)">
+    <h4>Update Image</h4>
+
+    <ion-input name="image" type="file"></ion-input>
+
+    <ion-button type="submit" expand="block">
+      <ion-text>Submit</ion-text>
+      <ion-spinner
+        *ngIf="isUpdatingImage"
+        class="ion-margin-start"
+      ></ion-spinner>
+    </ion-button>
+  </form>
+</div>

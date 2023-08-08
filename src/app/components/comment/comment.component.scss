@@ -1,0 +1,30 @@
+.comment {
+  width: 100%;
+  margin-top: 1rem;
+  // border: 1px solid black;
+
+  ion-item {
+    width: 100%;
+  }
+}
+
+// app-comment {
+//   border: 1px dashed red;
+// }
+
+.replies {
+  width: 95%;
+  float: right;
+}
+
+.btns {
+  display: flex;
+}
+
+.reply-form {
+  .reply-form-btns {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}

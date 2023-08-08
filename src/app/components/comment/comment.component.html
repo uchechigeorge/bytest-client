@@ -1,0 +1,199 @@
+<div class="comment">
+  <ion-item>
+    <ion-thumbnail>
+      <ion-img [src]="imageUrl"></ion-img>
+    </ion-thumbnail>
+    <ion-label class="ion-padding-start">
+      <ion-note style="font-size: 12px">{{ name }}</ion-note>
+      <h4>{{ content }}</h4>
+      <ion-note *ngIf="edited" style="font-size: 10px">Edited</ion-note>
+    </ion-label>
+    <ion-buttons *ngIf="isPostOwner || isOwner">
+      <ion-button
+        fill="clear"
+        size="small"
+        [id]="'comment-popover-trigger' + commentId"
+      >
+        <ion-icon
+          slot="icon-only"
+          name="ellipsis-horizontal"
+          *ngIf="!isUpdating"
+        ></ion-icon>
+        <ion-spinner slot="icon-only" *ngIf="isUpdating"></ion-spinner>
+      </ion-button>
+    </ion-buttons>
+  </ion-item>
+
+  <div class="reply-form" *ngIf="showForm">
+    <form [formGroup]="commentForm">
+      <ion-input
+        placeholder="Add a comment..."
+        fill="solid"
+        formControlName="content"
+        class="ion-margin-bottom"
+      ></ion-input>
+      <div class="user-details">
+        <ion-grid style="padding: 0">
+          <ion-row>
+            <ion-col size="12" sizeMd="3">
+              <ion-input
+                label="First name"
+                labelPlacement="stacked"
+                formControlName="firstName"
+                fill="solid"
+                [readonly]="loggedIn"
+              ></ion-input>
+            </ion-col>
+
+            <ion-col size="12" sizeMd="3">
+              <ion-input
+                label="Last name"
+                labelPlacement="stacked"
+                formControlName="lastName"
+                [readonly]="loggedIn"
+                fill="solid"
+              ></ion-input>
+            </ion-col>
+
+            <ion-col size="12" sizeMd="3">
+              <ion-input
+                label="Email"
+                labelPlacement="stacked"
+                formControlName="email"
+                [readonly]="loggedIn"
+                fill="solid"
+              ></ion-input>
+            </ion-col>
+
+            <ion-col size="12" sizeMd="3">
+              <ion-input
+                label="Phone"
+                labelPlacement="stacked"
+                formControlName="phone"
+                [readonly]="loggedIn"
+                fill="solid"
+              ></ion-input>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <ion-checkbox
+          *ngIf="!loggedIn"
+          formControlName="saveDetails"
+          style="padding-left: 5px"
+          >Save my name and email</ion-checkbox
+        >
+      </div>
+
+      <ion-checkbox formControlName="anonymous" style="margin-top: 1rem"
+        >Anonymous</ion-checkbox
+      >
+      <div class="reply-form-btns">
+        <ion-button
+          size="small"
+          shape="round"
+          fill="clear"
+          (click)="showForm = false"
+          >Cancel</ion-button
+        >
+        <ion-button
+          size="small"
+          shape="round"
+          [disabled]="commentForm.invalid"
+          (click)="addReply()"
+        >
+          <ion-spinner *ngIf="isAddingReply"></ion-spinner>
+          Reply
+        </ion-button>
+      </div>
+    </form>
+  </div>
+
+  <div class="btns">
+    <ion-button
+      size="small"
+      shape="round"
+      *ngIf="hasReply && showReplyBtn"
+      fill="clear"
+      (click)="viewReplies()"
+    >
+      <ion-icon [name]="showReply ? 'arrow-up' : 'arrow-down'"></ion-icon>
+      <ion-text>
+        {{ noOfReplies + " " + (noOfReplies > 1 ? "Replies" : "Reply") }}
+      </ion-text>
+    </ion-button>
+
+    <ion-button
+      size="small"
+      shape="round"
+      fill="clear"
+      (click)="showForm = true"
+      >Reply</ion-button
+    >
+  </div>
+
+  <div class="replies" *ngIf="showReply && hasReply">
+    <ion-spinner *ngIf="fetchingChildren" name="bubbles"></ion-spinner>
+    <!-- <ion-list> -->
+    <app-comment
+      style="display: block"
+      *ngFor="let comment of children; let index"
+      [commentId]="comment.id"
+      [postId]="comment.postId"
+      [content]="comment.content"
+      [edited]="comment.edited"
+      [hasReply]="comment.hasReply"
+      [noOfReplies]="comment.noOfReplies"
+      [isOwner]="comment.isOwner"
+      [isPostOwner]="comment.isPostOwner"
+      [name]="comment?.user?.name"
+      [imageUrl]="comment?.user?.dpUrl"
+    ></app-comment>
+    <br />
+    <!-- </ion-list> -->
+  </div>
+</div>
+
+<ion-popover
+  *ngIf="isPostOwner || isOwner"
+  #commentPopover
+  [trigger]="'comment-popover-trigger' + commentId"
+  triggerAction="click"
+  side="top"
+  alignment="center"
+>
+  <ng-template>
+    <ion-list
+      style="max-height: 200px; height: 100px; overflow-y: scroll; padding: 0"
+    >
+      <ion-item
+        button
+        (click)="commentPopover.dismiss(); approveReply()"
+        *ngIf="isPostOwner"
+      >
+        <ion-label>Approve</ion-label>
+      </ion-item>
+      <ion-item
+        button
+        (click)="commentPopover.dismiss(); hideReply()"
+        *ngIf="isPostOwner"
+      >
+        <ion-label>Hide</ion-label>
+      </ion-item>
+      <ion-item
+        button
+        (click)="commentPopover.dismiss(); editReply()"
+        *ngIf="isOwner"
+      >
+        <ion-label>Edit</ion-label>
+      </ion-item>
+      <ion-item
+        button
+        (click)="commentPopover.dismiss(); deleteReply()"
+        *ngIf="isOwner"
+      >
+        <ion-label>Delete</ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
+</ion-popover>

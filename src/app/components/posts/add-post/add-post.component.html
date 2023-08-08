@@ -1,0 +1,38 @@
+<div class="container">
+  <form [formGroup]="formGroup" (submit)="add($event)">
+    <ion-input
+      label="Title"
+      fill="solid"
+      name="title"
+      class="ion-margin-bottom"
+      formControlName="title"
+    ></ion-input>
+    <ion-textarea
+      label="Content"
+      fill="solid"
+      name="content"
+      [autoGrow]="true"
+      class="ion-margin-bottom"
+      formControlName="content"
+    ></ion-textarea>
+    <ion-input
+      label="Image File"
+      type="file"
+      fill="solid"
+      name="image"
+      class="ion-margin-bottom"
+      formControlName="image"
+    ></ion-input>
+    <ion-checkbox
+      class="ion-margin-bottom"
+      formControlName="publish"
+      name="publish"
+      >Publish Post</ion-checkbox
+    >
+
+    <ion-button type="submit" expand="block" [disabled]="formGroup.invalid">
+      <ion-text>Submit</ion-text>
+      <ion-spinner *ngIf="isAdding" class="ion-margin-start"></ion-spinner>
+    </ion-button>
+  </form>
+</div>

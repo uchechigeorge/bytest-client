@@ -1,0 +1,120 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>My Posts</ion-title>
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/posts"></ion-back-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-button fill="outline" id="open-add-post-modal" *ngIf="loggedIn">
+        <ion-icon slot="start" name="log-out"></ion-icon>
+        Add Post
+      </ion-button>
+      <ion-button fill="outline" (click)="logout()" *ngIf="loggedIn">
+        <ion-icon slot="start" name="log-out"></ion-icon>
+        Log out
+      </ion-button>
+      <ion-button fill="outline" (click)="login()" *ngIf="!loggedIn">
+        <ion-icon slot="start" name="log-out"></ion-icon>
+        Log in
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" *ngIf="loggedIn">
+  <div class="container">
+    <div class="container-spinner" *ngIf="isFetching">
+      <ion-spinner name="bubbles" class="ion-text-center"></ion-spinner>
+    </div>
+    <div class="error-container" *ngIf="hasError">
+      <ion-text>{{errorMessage}}</ion-text>
+    </div>
+    <ion-list>
+      <ion-card class="post-card" *ngFor="let post of posts; let index">
+        <ion-img [src]="post.imageUrl"></ion-img>
+        <ion-card-header>
+          <ion-card-title>{{post.title}}</ion-card-title>
+          <ion-card-subtitle>
+            <ion-icon name="person"></ion-icon>
+            <ion-text> {{post?.user?.name}} </ion-text>
+          </ion-card-subtitle>
+          <ion-card-subtitle>
+            <ion-icon name="calendar"></ion-icon>
+            <ion-text> {{formatDate(post?.dateModified)}} </ion-text>
+          </ion-card-subtitle>
+          <ion-card-subtitle>
+            <ion-icon name="chatbubbles"></ion-icon>
+            <ion-text> {{post?.noOfComments}} </ion-text>
+          </ion-card-subtitle>
+
+          <ion-card-subtitle>
+            <ion-text>
+              {{post?.hidden ? 'Not Published' : 'Published'}}
+            </ion-text>
+          </ion-card-subtitle>
+        </ion-card-header>
+
+        <ion-card-content>{{post.content}}</ion-card-content>
+
+        <ion-button fill="clear" (click)="viewPost(post.id)">View</ion-button>
+        <ion-button fill="clear" (click)="onEdit(post.id); modalEdit.present();"
+          >Edit</ion-button
+        >
+        <ion-button fill="clear" color="danger" (click)="deletePost(post.id)"
+          >Delete</ion-button
+        >
+      </ion-card>
+    </ion-list>
+  </div>
+
+  <ion-infinite-scroll (ionInfinite)="onInfinite($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Please wait..."
+    ></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <ion-modal
+    #modalAdd
+    trigger="open-add-post-modal"
+    (willDismiss)="onAddWillDismiss($event)"
+  >
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Add Post</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="modalAdd.dismiss()">
+              <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <app-add-post></app-add-post>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-modal #modalEdit (willDismiss)="onEditWillDismiss($event)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Edit Post</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="modalEdit.dismiss()">
+              <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="ion-padding">
+        <app-edit-post [postId]="selectedPostId"></app-edit-post>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

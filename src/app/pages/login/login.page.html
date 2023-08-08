@@ -1,0 +1,46 @@
+<ion-content [fullscreen]="true" color="primary" class="ion-padding">
+  <div class="container">
+    <form class="form" [formGroup]="formGroup">
+      <h4>Login</h4>
+
+      <ion-input
+        label="Email"
+        formControlName="email"
+        fill="solid"
+        class="ion-margin-bottom"
+        placeholder="Email or Username"
+      ></ion-input>
+
+      <ion-input
+        label="Password"
+        type="password"
+        formControlName="password"
+        fill="solid"
+      ></ion-input>
+
+      <ion-button
+        expand="block"
+        class="main"
+        type="submit"
+        [disabled]="formGroup.invalid"
+        (click)="login()"
+      >
+        <ion-text>Submit</ion-text>
+        <ion-spinner
+          class="ion-margin-start"
+          *ngIf="formSubmiting"
+        ></ion-spinner>
+      </ion-button>
+      <div class="sub-btn-container">
+        <ion-button
+          fill="outline"
+          class="ion-text-center"
+          size="small"
+          fill="clear"
+          (click)="goToSignup()"
+          >No Account? Sign Up</ion-button
+        >
+      </div>
+    </form>
+  </div>
+</ion-content>

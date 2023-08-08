@@ -1,0 +1,35 @@
+.container {
+  background-color: #fff;
+  color: #000;
+  width: 100%;
+  max-width: 700px;
+  border-radius: 5px;
+  padding: 1rem 1rem;
+  margin: 0 auto;
+  margin-top: 5rem;
+}
+
+.form {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+
+  h4 {
+    text-align: center;
+    font-variant: unicase;
+  }
+
+  ion-button.main {
+    margin-top: 5rem;
+  }
+
+  .sub-btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ion-text {
+      margin-right: 1rem;
+    }
+  }
+}
