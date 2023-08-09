@@ -21,7 +21,7 @@
 
 <ion-content [fullscreen]="true">
   <div class="container">
-    <div class="container-spinner" *ngIf="isFetching">
+    <div class="container-spinner" *ngIf="isFetchingPost">
       <ion-spinner name="bubbles" class="ion-text-center"></ion-spinner>
     </div>
     <div class="error-container" *ngIf="hasError">
@@ -156,7 +156,9 @@
       </ion-segment>
 
       <ion-list class="ion-margin-top">
-        <!-- <ion-list-header> </ion-list-header> -->
+        <div class="container-spinner" *ngIf="isFetchingComments">
+          <ion-spinner name="bubbles" class="ion-text-center"></ion-spinner>
+        </div>
 
         <app-comment
           *ngFor="let comment of comments; let index"

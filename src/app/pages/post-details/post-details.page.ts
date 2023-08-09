@@ -16,9 +16,11 @@ export class PostDetailsPage implements OnInit {
   postId: string = '';
   postDetails: any = {};
 
-  isFetching: boolean = false;
+  isFetchingPost: boolean = false;
   hasError: boolean = false;
   errorMessage: string = '';
+
+  isFetchingComments: boolean = false;
   comments: any[] = [];
   pageComments: number = 1;
   // Filters
@@ -97,7 +99,7 @@ export class PostDetailsPage implements OnInit {
   }
 
   getPost() {
-    this.isFetching = true;
+    this.isFetchingPost = true;
     const subscription = this.postService.getPost(this.postId).subscribe({
       next: (value: any) => {
         if (!value?.data) {
@@ -117,7 +119,7 @@ export class PostDetailsPage implements OnInit {
     });
 
     subscription.add(() => {
-      this.isFetching = false;
+      this.isFetchingPost = false;
     });
   }
 
@@ -139,14 +141,21 @@ export class PostDetailsPage implements OnInit {
       params.parentId = this.parentId;
     }
 
-    this.commentsService.getComments({ ...params }).subscribe({
-      next: (value: any) => {
-        this.comments.push(...value.data);
-        console.log(value);
-      },
-      error: (err) => {
-        console.log(err);
-      },
+    this.isFetchingComments = true;
+    const subscription = this.commentsService
+      .getComments({ ...params })
+      .subscribe({
+        next: (value: any) => {
+          this.comments.push(...value.data);
+          console.log(value);
+        },
+        error: (err) => {
+          console.log(err);
+        },
+      });
+
+    subscription.add(() => {
+      this.isFetchingComments = false;
     });
   }
 
@@ -246,7 +255,8 @@ export class PostDetailsPage implements OnInit {
         this.comments = [];
         this.getComments();
 
-        this.commentForm.reset();
+        this.commentForm.get('content')?.reset('');
+        this.getUserDetails();
 
         console.log(value);
       },
@@ -287,17 +297,6 @@ export class PostDetailsPage implements OnInit {
   login() {
     this.router.navigateByUrl('/login');
   }
-
-  // newUserDetailsCheck(value: any) {
-  //   if (value?.email == null || value?.email.toString()?.trim() == '')
-  //     return false;
-  //   if (value?.firstName == null || value?.firstName.toString()?.trim() == '')
-  //     return false;
-  //   if (value?.lastName == null || value?.lastName.toString()?.trim() == '')
-  //     return false;
-
-  //   return true;
-  // }
 }
 
 enum CommentFilterStatus {

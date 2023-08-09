@@ -203,7 +203,7 @@ export class CommentComponent implements OnInit {
           this.children = [];
           this.fetchChildren();
 
-          this.commentForm.reset();
+          this.commentForm.get('content')?.reset();
           this.showForm = false;
           this.showReply = true;
           if (value?.meta?.total) {
